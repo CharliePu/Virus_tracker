@@ -1,6 +1,8 @@
 package com.example.virustracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     ProgressBar loading;
     SearchView searchView;
+
+    SharedPreferences sharedPref;
 
     HashMap<String, Record> data;
 
@@ -79,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        location = "武汉";
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        location = sharedPref.getString("location","武汉");
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void applyChanges()
     {
+        sharedPref.edit().putString("location",location).apply();
+
         Record record = data.get(location);
         if (record == null){
             Log.d(TAG, "applyChanges: Failed to get record");

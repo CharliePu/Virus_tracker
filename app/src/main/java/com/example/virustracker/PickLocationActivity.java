@@ -97,10 +97,6 @@ public class PickLocationActivity extends AppCompatActivity {
                     @Override
                     public boolean onQueryTextSubmit(String query)
                     {
-                        // If the list contains the search query
-                        // than filter the adapter
-                        // using the filter method
-                        // with the query as its argument
                         if (dataList.contains(query)) {
                             adapter.getFilter().filter(query);
                         }
@@ -111,9 +107,6 @@ public class PickLocationActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    // This method is overridden to filter
-                    // the adapter according to a search query
-                    // when the user is typing search
                     @Override
                     public boolean onQueryTextChange(String newText)
                     {
