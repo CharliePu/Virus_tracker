@@ -1,6 +1,7 @@
 package com.example.virustracker;
 
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -93,11 +94,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
 
+        // Code from https://developer.android.com/training/appbar/action-views
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchableActivity.class)));
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "onOptionsItemSelected: passed1");
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 grabData();
