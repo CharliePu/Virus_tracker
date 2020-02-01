@@ -1,14 +1,13 @@
 package com.example.virustracker;
 
-import android.app.SearchManager;
-import android.content.ComponentName;
-import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -20,10 +19,12 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final int PICK_LOCATION_REQUEST_CODE = 0;
 
     Toolbar toolbar;
     TextView detail, confirmed, name;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     SearchView searchView;
 
     HashMap<String, Record> data;
+
+    String location;
 
     class syncWebTask extends AsyncTask<String, Void, String>{
         @Override
@@ -53,13 +56,12 @@ public class MainActivity extends AppCompatActivity {
             confirmed.setVisibility(View.VISIBLE);
             detail.setVisibility(View.VISIBLE);
 
-            String city = "苏州";
-            Record record = data.get(city);
+            Record record = data.get(location);
             if (record == null){
                 Log.d(TAG, "onPostExecute: Failed to get record");
                 return;
             }
-            name.setText(city);
+            name.setText(location);
             confirmed.setText(record.confirmed.toString());
             detail.setText(getString(R.string.detail,record.suspected,record.cured,record.dead));
         }
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        location = "武汉";
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -92,26 +95,42 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        // Code from https://developer.android.com/training/appbar/action-views
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchableActivity.class)));
+//        // Code from https://developer.android.com/training/appbar/action-views
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView = (SearchView) menu_main.findItem(R.id.action_search).getActionView();
+//        // Assumes current activity is the searchable activity
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, PickLocationActivity.class)));
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, "onOptionsItemSelected: passed1");
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 grabData();
                 return true;
+            case R.id.action_location:
+                Intent intent = new Intent(this, PickLocationActivity.class);
+
+                // Pass names of city to the pick location activity
+                ArrayList<String> list = new ArrayList<String>(data.keySet());
+                intent.putStringArrayListExtra("list", list);
+                startActivityForResult(intent, PICK_LOCATION_REQUEST_CODE);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Log.d(TAG, "onActivityResult: passed");
+        if (resultCode == RESULT_OK && requestCode == PICK_LOCATION_REQUEST_CODE) {
+            location = data.getStringExtra("location");
+            applyChanges();
         }
     }
 
@@ -121,5 +140,17 @@ public class MainActivity extends AppCompatActivity {
         detail.setVisibility(View.INVISIBLE);
 
         new syncWebTask().execute("https://3g.dxy.cn/newh5/view/pneumonia");
+    }
+
+    public void applyChanges()
+    {
+        Record record = data.get(location);
+        if (record == null){
+            Log.d(TAG, "applyChanges: Failed to get record");
+            return;
+        }
+        name.setText(location);
+        confirmed.setText(record.confirmed.toString());
+        detail.setText(getString(R.string.detail,record.suspected,record.cured,record.dead));
     }
 }

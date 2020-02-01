@@ -5,5 +5,6 @@
     <string name="search">搜索</string>
     <string name="confirmed">确诊数</string>
     <string name="detail">疑似数\t%1$d\n治愈数\t%2$d\n死亡数\t%3$d</string>
+    <string name="pick_location">选择位置</string>
     <string name="search_hint">搜索城市或省份</string>
 </resources>
