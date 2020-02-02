@@ -8,6 +8,9 @@
         android:title="@string/pick_location"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_about"
+        android:title="@string/about" />
+    <item
         android:id="@+id/action_refresh"
         android:title="@string/refresh" />
 </menu>

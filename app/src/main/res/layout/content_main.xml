@@ -83,4 +83,16 @@
         app:layout_constraintTop_toTopOf="@+id/iv_bg"
         tools:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/tv_update_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="更新时间2020年2月2日" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

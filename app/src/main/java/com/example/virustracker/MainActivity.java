@@ -22,6 +22,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,8 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_LOCATION_REQUEST_CODE = 0;
 
     Toolbar toolbar;
-    TextView detail, confirmed, name;
-    FloatingActionButton fab;
+    TextView detail, confirmed, name, updateMessage;
     ProgressBar loading;
     SearchView searchView;
 
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onPostExecute: Failed to get record");
                 return;
             }
+
+            String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+            updateMessage.setText(getString(R.string.update_message,currentDateTimeString));
             name.setText(location);
             confirmed.setText(record.confirmed.toString());
             detail.setText(getString(R.string.detail,record.suspected,record.cured,record.dead));
@@ -80,20 +84,12 @@ public class MainActivity extends AppCompatActivity {
         confirmed = findViewById(R.id.tv_confirmed);
         name = findViewById(R.id.tv_name);
         loading = findViewById(R.id.pb_loadData);
+        updateMessage = findViewById(R.id.tv_update_message);
 
         setSupportActionBar(toolbar);
 
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         location = sharedPref.getString("location","武汉");
-
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         grabData();
     }
@@ -106,12 +102,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 grabData();
                 return true;
+            case R.id.action_about:
+                intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.action_location:
-                Intent intent = new Intent(this, PickLocationActivity.class);
+                    intent = new Intent(this, PickLocationActivity.class);
 
                 // Pass names of city to the pick location activity
                 ArrayList<String> list = new ArrayList<String>(data.keySet());

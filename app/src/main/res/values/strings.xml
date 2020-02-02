@@ -7,4 +7,7 @@
     <string name="detail">疑似数\t%1$d\n治愈数\t%2$d\n死亡数\t%3$d</string>
     <string name="pick_location">选择位置</string>
     <string name="search_hint">搜索城市或省份</string>
+    <string name="about">关于</string>
+    <string name="update_message">查询时间%1$s\n数据来源丁香园</string>
+    <string name="about_content">实时查询中国各个地区武汉病毒传播的APP\n\n数据来源丁香园\nhttps://3g.dxy.cn/newh5/view/pneumonia\n\nGithub\nhttps://github.com/CharliePu/Virus_tracker </string>
 </resources>
